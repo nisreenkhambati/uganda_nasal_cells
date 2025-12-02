@@ -10,7 +10,7 @@ This repository contains data and code used in the analysis of the RNA sequencin
 
 3.	*enrichment_cibersortx_github.R*: performs gsea and ORA enrichment analysis for nasal and blood samples and estimates immune cell composition using cibersortx
 
-4.	*roc_models_github.r*: trains six machine learning models using nasal and blood DEG and calculates cross-validated AUC for predicting TB
+4.	*roc_models_github.R*: trains six machine learning models using nasal and blood DEG and calculates cross-validated AUC for predicting TB
 
 5.	*TB_signatureprofiler_github.R*: evaluates the performance of previously published diagnostic TB blood signatures in the nasal and blood datasets. 
 
