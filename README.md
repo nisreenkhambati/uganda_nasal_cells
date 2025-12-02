@@ -48,8 +48,6 @@ This repository contains data and code used in the analysis of the RNA sequencin
 
 *c2.cp.reactome.v2023.2.Hs.symbols.gmt.txt*: Canonical Pathways gene sets derived from the Reactome pathway database (MSigDB)
 
-*gencode.v44.primary_assembly.annotation.gtf*: comprehensive gene annotation on the primary assembly (chromosomes and scaffolds) sequence regions (Release 44 -GRCh38.p14)
-
 *CIBERSORTx_Job2_Adjusted.txt*: CIBERSORTx results for nasal samples 
 
 *CIBERSORTx_Job3_Adjusted.txt*: CIBERSORTx results for blood samples 
