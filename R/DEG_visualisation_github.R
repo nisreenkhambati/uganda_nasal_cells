@@ -42,7 +42,9 @@ all(colnames(counts_data) == rownames(coldata))
 #sex correction
 batch <- factor(coldata$sex)
 sample_group <- factor(coldata$status)
-counts_corrected <- ComBat_seq(as.matrix(counts_data), batch=batch, group=sample_group)
+counts_corrected <- ComBat_seq(as.matrix(counts_data),
+    batch=batch,
+    group=sample_group)
 
 
 #### DESeq2  ####
@@ -119,9 +121,12 @@ nasalvp <- ggplot(master, aes(x=log2fold, y=mlog10p.adj)) +
   geom_vline(xintercept= -1, linetype="dashed", colour="grey", size=0.5) +
   geom_vline(xintercept= 1, linetype="dashed", colour="grey", size=0.5) +
   geom_hline(yintercept=-log10(0.05), linetype="dashed", colour="grey", size=0.5) +
-  geom_text_repel(data=master_sig_up_top5, aes(label=gene_name, colour= "b"), show.legend = FALSE) +
-  geom_text_repel(data=master_sig_down_top5, aes(label=gene_name, colour= "c"), show.legend = FALSE) +
-  scale_colour_manual(values = c("black", "red", "blue"), labels=c("No change", "up","down"), name="")
+  geom_text_repel(data=master_sig_up_top5,
+      aes(label=gene_name, colour= "b"), show.legend = FALSE) +
+  geom_text_repel(data=master_sig_down_top5,
+      aes(label=gene_name, colour= "c"), show.legend = FALSE) +
+  scale_colour_manual(values = c("black", "red", "blue"),
+      labels=c("No change", "up","down"), name="")
 
 
 ####  Boxplot with jitter ####
@@ -184,7 +189,9 @@ nasal_heatmap_DEG <- Heatmap(mat,
                              show_row_names = F, #no gene names
                              show_column_names = T,
                              top_annotation = ha,
-                             show_column_dend = F, show_row_dend = F, column_dend_height = unit(2, "cm"),
+                             show_column_dend = F,
+                             show_row_dend = F,
+                             column_dend_height = unit(2, "cm"),
                              column_names_side = "top",
                              row_names_gp = gpar(fontsize=6),
                              column_names_gp = gpar(fontsize=12),
@@ -197,7 +204,8 @@ nasal_heatmap_DEG <- Heatmap(mat,
 
 
 #### BLOOD ####
-counts_data_blood <- read.csv("data/bloodcounts.csv", header=TRUE, row.names = 1)
+counts_data_blood <- read.csv("data/bloodcounts.csv",
+    header=TRUE, row.names = 1)
 coldata_blood <- read.csv("data/bloodcoldata.csv", header=TRUE, row.names = 1)
 coldata_blood <- coldata_blood %>%
   dplyr::mutate(
@@ -215,7 +223,9 @@ all(colnames(counts_data_blood) == rownames(coldata_blood))
 #sex correction
 batch <- factor(coldata_blood$sex)
 sample_group <- factor(coldata_blood$status)
-counts_corrected_blood <- ComBat_seq(as.matrix(counts_data_blood), batch=batch, group=sample_group)
+counts_corrected_blood <- ComBat_seq(as.matrix(counts_data_blood),
+    batch=batch,
+    group=sample_group)
 
 
 #### DESeq2  ####
@@ -292,9 +302,12 @@ bloodvp <- ggplot(master, aes(x=log2fold, y=mlog10p.adj)) +
   geom_vline(xintercept= -1, linetype="dashed", colour="grey", size=0.5) +
   geom_vline(xintercept= 1, linetype="dashed", colour="grey", size=0.5) +
   geom_hline(yintercept=-log10(0.05), linetype="dashed", colour="grey", size=0.5) +
-  geom_text_repel(data=master_sig_up_top5, aes(label=gene_name, colour= "b"), show.legend = FALSE) +
-  geom_text_repel(data=master_sig_down_top5, aes(label=gene_name, colour= "c"), show.legend = FALSE) +
-  scale_colour_manual(values = c("black", "red", "blue"), labels=c("No change", "up","down"), name="")
+  geom_text_repel(data=master_sig_up_top5,
+      aes(label=gene_name, colour= "b"), show.legend = FALSE) +
+  geom_text_repel(data=master_sig_down_top5,
+      aes(label=gene_name, colour= "c"), show.legend = FALSE) +
+  scale_colour_manual(values = c("black", "red", "blue"),
+      labels=c("No change", "up","down"), name="")
 
 
 
@@ -358,7 +371,9 @@ blood_heatmap_DEG <- Heatmap(mat,
                              show_row_names = F, #no gene names
                              show_column_names = T,
                              top_annotation = ha,
-                             show_column_dend = F, show_row_dend = F, column_dend_height = unit(2, "cm"),
+                             show_column_dend = F,
+                             show_row_dend = F,
+                             column_dend_height = unit(2, "cm"),
                              column_names_side = "top",
                              row_names_gp = gpar(fontsize=6),
                              column_names_gp = gpar(fontsize=12),
@@ -379,11 +394,14 @@ nasalvp
 bloodbp_dot
 bloodvp
 
-VP_BP_dot <- cowplot::plot_grid(nasalvp, bloodvp, nasalbp_dot, bloodbp_dot, ncol=2, labels=LETTERS[1:2:3:4])
+VP_BP_dot <- cowplot::plot_grid(nasalvp, bloodvp, nasalbp_dot, bloodbp_dot,
+    ncol=2, labels=LETTERS[1:2:3:4])
 VP_BP_dot
 title_row <- cowplot::plot_grid(
-  cowplot::ggdraw() + cowplot::draw_label("Nasal", fontface = "bold", size = 16),
-  cowplot::ggdraw() + cowplot::draw_label("Blood", fontface = "bold", size = 16),
+  cowplot::ggdraw() +
+        cowplot::draw_label("Nasal", fontface = "bold", size = 16),
+  cowplot::ggdraw() +
+        cowplot::draw_label("Blood", fontface = "bold", size = 16),
   ncol = 2
 )
 
@@ -396,13 +414,16 @@ VP_BP_titles_dot
 
 #### Scatter plot ####
 
-# here include all genes under evaluation and use colours to code for nasal deg, blood deg, and both deg.
+# here include all genes under evaluation and use colours to code for nasal deg,
+# blood deg, and both deg.
 # wrangle data
 de$Gene <- rownames(de)
 de_blood$Gene <- rownames(de_blood)
 merged_data <- merge(de, de_blood, by = "Gene")
 
-merged_data$label <- ifelse((merged_data$p.adj.x < 0.05 & abs(merged_data$log2fold.x) >1.0)  & (merged_data$p.adj.y < 0.05 & abs(merged_data$log2fold.y) >1.0),
+merged_data$label <- ifelse((merged_data$p.adj.x < 0.05 &
+        abs(merged_data$log2fold.x) >1.0)  &
+        (merged_data$p.adj.y < 0.05 & abs(merged_data$log2fold.y) >1.0),
                             as.character(merged_data$Gene), NA)
 
 merged_data$label_blood_alone <- ifelse(
@@ -433,7 +454,8 @@ merged_data <- merged_data %>%
                                       "DEG in both nose and blood")))
 
 
-agreement_plot <- ggplot(merged_data, aes(x = log2fold.x, y = log2fold.y, color = category)) +
+agreement_plot <- ggplot(merged_data,
+    aes(x = log2fold.x, y = log2fold.y, color = category)) +
   geom_point(
     data = subset(merged_data, category == "Not Significant"),
     size = 2.5, alpha = 0.6
@@ -514,9 +536,11 @@ head(names(ranks))
 present_nasal <- intersect(nasal_genes, names(ranks))
 missing_nasal <- setdiff(nasal_genes, names(ranks))
 
-cat(length(present_nasal), "of", length(nasal_genes), "nasal genes found in 'ranks'.\n")
+cat(length(present_nasal), "of",
+    length(nasal_genes), "nasal genes found in 'ranks'.\n")
 if(length(missing_nasal) > 0){
-  cat("Missing genes (not found in ranks):", paste(missing_nasal, collapse = ", "), "\n")
+  cat("Missing genes (not found in ranks):",
+      paste(missing_nasal, collapse = ", "), "\n")
 }
 nasal_pathway <- list(Nasal_44 = present_nasal)
 set.seed(42)
@@ -558,9 +582,11 @@ head(names(ranks))
 present_blood <- intersect(blood_genes, names(ranks))
 missing_blood <- setdiff(blood_genes, names(ranks))
 
-cat(length(present_blood), "of", length(blood_genes), "blood genes found in 'ranks'.\n")
+cat(length(present_blood), "of", length(blood_genes),
+    "blood genes found in 'ranks'.\n")
 if(length(missing_blood) > 0){
-  cat("Missing genes (not found in ranks):", paste(missing_blood, collapse = ", "), "\n")
+  cat("Missing genes (not found in ranks):",
+      paste(missing_blood, collapse = ", "), "\n")
 }
 
 blood_pathway <- list(Blood_238 = present_blood)
