@@ -1,5 +1,6 @@
 # QC and PCA
-# This R script processes the counts data and metafiles and does QC, heatmaps and pca.
+# This R script processes the counts data and metadata files and does QC,
+# heatmaps and pca.
 
 #### Load libraries ####
 library(ggplot2)
@@ -16,18 +17,21 @@ library(BiocManager)
 library(reshape2)
 library(circlize)
 library(ggpubr)
+library(cowplot)
 
 
 #### Preparing nasal data  ####
-coldata <- read.csv("data/full_metadata.csv", header = TRUE, row.names = 4, sep = ",")
+coldata <- read.csv("data/full_metadata.csv",
+    header = TRUE, row.names = 4, sep = ",")
 coldata <- coldata[,-1]
 coldata <- coldata[coldata$type == "nasal",]
 row.names(coldata)
 row_order <- paste0("S", 1:35)
 coldata <- coldata[row_order,]
 
-counts_data <-read.delim("data/rnaseq_counts_protein_coding_final.txt", header = TRUE, sep = "\t", dec=".")
-row.names(counts_data) <- counts_data$ID #make ID rownames
+counts_data <- read.delim("data/rnaseq_counts_protein_coding_final.txt",
+    header = TRUE, sep = "\t", dec=".")
+row.names(counts_data) <- counts_data$ID # make ID rownames
 counts_data <- counts_data[, -1]
 colnames(counts_data)
 counts_data <- counts_data[colnames(counts_data) %in% rownames(coldata)]
@@ -41,18 +45,20 @@ all(colnames(counts_data) == rownames(coldata))
 
 
 # Remove non-useful genes
-genes <-read.delim("data/genes_annotation_final.txt", header = TRUE, sep = "\t", dec=".")
+genes <- read.delim("data/genes_annotation_final.txt",
+    header = TRUE, sep = "\t", dec=".")
 genes[(duplicated(genes$ensembl_gene_id_version) == TRUE),]
 all(rownames(counts_data) %in% genes$ensembl_gene_id_version)
-counts_data <- merge(counts_data, genes[1:2], by.x = "row.names", by.y= "ensembl_gene_id_version", all= FALSE)
+counts_data <- merge(counts_data, genes[1:2], by.x = "row.names",
+    by.y= "ensembl_gene_id_version", all= FALSE)
 row.names(counts_data) <- counts_data$Row.names
 counts_data <- counts_data[, -1]
 
-counts_data<- counts_data[!grepl("HB", counts_data$external_gene_name),]
-counts_data<- counts_data[!grepl("^MT", counts_data$external_gene_name),]
-counts_data<- counts_data[!grepl("RPL", counts_data$external_gene_name),]
-counts_data<- counts_data[!grepl("RPS", counts_data$external_gene_name),]
-counts_data<- counts_data[!grepl("RNA", counts_data$external_gene_name),]
+counts_data <- counts_data[!grepl("HB", counts_data$external_gene_name),]
+counts_data <- counts_data[!grepl("^MT", counts_data$external_gene_name),]
+counts_data <- counts_data[!grepl("RPL", counts_data$external_gene_name),]
+counts_data <- counts_data[!grepl("RPS", counts_data$external_gene_name),]
+counts_data <- counts_data[!grepl("RNA", counts_data$external_gene_name),]
 counts_data <-  counts_data[,-36]
 colnames(counts_data)
 
@@ -61,7 +67,7 @@ colnames(counts_data)
 counts_data <- subset(counts_data,apply(counts_data, 1, mean) >= 1)
 
 
-str(coldata) #status and sex are character
+str(coldata) # status and sex are character
 coldata <- coldata %>%
   dplyr::mutate(
     status = factor(status, levels = c("control", "case")),
@@ -69,22 +75,24 @@ coldata <- coldata %>%
   )
 
 
-# Add gene names to your counts data
-genes <- read.delim("data/genes_annotation_final.txt", header = TRUE, sep = "\t", dec=".")
+# Add gene names to counts data
+genes <- read.delim("data/genes_annotation_final.txt",
+    header = TRUE, sep = "\t", dec=".")
 genes[(duplicated(genes$ensembl_gene_id_version) == TRUE),]
 all(rownames(counts_data) %in% genes$ensembl_gene_id_version)
 genes <- genes[genes$ensembl_gene_id_version %in% rownames(counts_data) ,]
 all(rownames(counts_data) %in% genes$ensembl_gene_id_version)
-test <- merge(counts_data, genes[1:2], by.x = "row.names", by.y= "ensembl_gene_id_version", all= FALSE)
+test <- merge(counts_data, genes[1:2], by.x = "row.names",
+    by.y= "ensembl_gene_id_version", all= FALSE)
 row.names(test) <- test$Row.names
 test <- test[, -1]
-missing_names<- genes[genes$external_gene_name == "", ]
+missing_names <- genes[genes$external_gene_name == "", ]
 missing_names2 <- genes[is.na(genes$external_gene_name),]
 duplicate_names<- test[duplicated(test$external_gene_name),] #160
 duplicate_names$external_gene_name
 non_duplicates_idx <- which(duplicated(test$external_gene_name) == FALSE)
 test <- test[non_duplicates_idx, ]
-duplicate_names<- test[duplicated(test$external_gene_name),] # 0
+duplicate_names <- test[duplicated(test$external_gene_name),] # 0
 duplicate_names$external_gene_name
 row.names(test) <- test[,"external_gene_name"]
 
@@ -177,14 +185,16 @@ euclid_ht_no
 
 #### Preparing blood data  ####
 
-coldata <- read.csv("data/full_metadata.csv", header = TRUE, row.names = 4, sep = ",")
+coldata <- read.csv("data/full_metadata.csv",
+    header = TRUE, row.names = 4, sep = ",")
 coldata <- coldata[,-1]
 coldata <- coldata[coldata$type == "blood",] #subset blood only
 row.names(coldata)
 row_order <- paste0("S", 36:75)
 coldata <- coldata[row_order,]
 
-counts_data <-read.delim("data/rnaseq_counts_protein_coding_final.txt", header = TRUE, sep = "\t", dec=".")
+counts_data <- read.delim("data/rnaseq_counts_protein_coding_final.txt",
+    header = TRUE, sep = "\t", dec=".")
 row.names(counts_data) <- counts_data$ID
 counts_data <- counts_data[, -1]
 colnames(counts_data)
@@ -199,10 +209,12 @@ all(colnames(counts_data) %in% rownames(coldata))
 all(colnames(counts_data) == rownames(coldata))
 
 #### Remove non-useful genes  ####
-genes <-read.delim("data/genes_annotation_final.txt", header = TRUE, sep = "\t", dec=".")
+genes <- read.delim("data/genes_annotation_final.txt",
+    header = TRUE, sep = "\t", dec=".")
 genes[(duplicated(genes$ensembl_gene_id_version) == TRUE),]
 all(rownames(counts_data) %in% genes$ensembl_gene_id_version)
-counts_data <- merge(counts_data, genes[1:2], by.x = "row.names", by.y= "ensembl_gene_id_version", all= FALSE)
+counts_data <- merge(counts_data, genes[1:2], by.x = "row.names",
+    by.y= "ensembl_gene_id_version", all= FALSE)
 row.names(counts_data) <- counts_data$Row.names
 counts_data <- counts_data[, -1]
 
@@ -216,7 +228,7 @@ colnames(counts_data)
 
 
 # Filter for genes with a median >= 0
-counts_data <- subset(counts_data,apply(counts_data, 1, mean) >= 1)
+counts_data <- subset(counts_data, apply(counts_data, 1, mean) >= 1)
 # 15946
 
 str(coldata)
@@ -228,17 +240,19 @@ coldata <- coldata %>%
 
 #### Add gene names to your counts data ####
 # Add gene names to your counts data
-genes <-read.delim("data/genes_annotation_final.txt", header = TRUE, sep = "\t", dec=".")
+genes <- read.delim("data/genes_annotation_final.txt",
+    header = TRUE, sep = "\t", dec=".")
 genes[(duplicated(genes$ensembl_gene_id_version) == TRUE),]
 all(rownames(counts_data) %in% genes$ensembl_gene_id_version)
 genes <- genes[genes$ensembl_gene_id_version %in% rownames(counts_data) ,]
 all(rownames(counts_data) %in% genes$ensembl_gene_id_version)
-test <- merge(counts_data, genes[1:2], by.x = "row.names", by.y= "ensembl_gene_id_version", all= FALSE)
+test <- merge(counts_data, genes[1:2], by.x = "row.names",
+    by.y= "ensembl_gene_id_version", all= FALSE)
 row.names(test) <- test$Row.names
 test <- test[, -1]
-missing_names<- genes[genes$external_gene_name == "", ]
+missing_names <- genes[genes$external_gene_name == "", ]
 missing_names2 <- genes[is.na(genes$external_gene_name),]
-duplicate_names<- test[duplicated(test$external_gene_name),] #160
+duplicate_names <- test[duplicated(test$external_gene_name),] #160
 duplicate_names$external_gene_name
 non_duplicates_idx <- which(duplicated(test$external_gene_name) == FALSE)
 test <- test[non_duplicates_idx, ]
@@ -339,10 +353,12 @@ euclid_ht_no
 
 #### Preparing data  ####
 
-#Bring in your counts data and coldata
+# Bring in your counts data and coldata
 # coldata: 32 obs 19 variables
 # counts : 16889 obs, 32 columns
-#have been wrangled with following steps - removed low count genes, non useful genes, removed 3 outlier samples, have given them gene names
+# have been wrangled with following steps - removed low count genes,
+# non useful genes, removed 3 outlier samples, have given them gene names
+
 counts_data <- read.csv("data/nasalcounts.csv", header=TRUE, row.names = 1)
 coldata <- read.csv("data/nasalcoldata.csv", header=TRUE, row.names = 1)
 coldata <- coldata %>%
@@ -368,7 +384,7 @@ ntop <- 500
 rv <- rowVars(assay(vsd))
 select <- order(rv, decreasing = TRUE)[seq_len(min(ntop, length(rv)))]
 mat <- t( assay(vsd)[select, ] )
-pca<-prcomp(mat)
+pca <- prcomp(mat)
 
 
 #### biological variables ####
@@ -381,11 +397,11 @@ pc1_pc2_noeclip <- function(colour_groups, e_data)
   pca<-prcomp(mat)
   pca_coordinates <-  as.data.frame(pca$x)
 
-  vars = apply(pca$x, 2, var)
-  prop_x = round(vars["PC1"] / sum(vars) * 100, 0)
-  prop_y = round(vars["PC2"] / sum(vars) * 100, 0)
-  x_axis_label = paste("PC1 (", prop_x, "%)", sep = "")
-  y_axis_label = paste("PC2 (", prop_y, "%)", sep = "")
+  vars <- apply(pca$x, 2, var)
+  prop_x <- round(vars["PC1"] / sum(vars) * 100, 0)
+  prop_y <- round(vars["PC2"] / sum(vars) * 100, 0)
+  x_axis_label <- paste("PC1 (", prop_x, "%)", sep = "")
+  y_axis_label <- paste("PC2 (", prop_y, "%)", sep = "")
 
   ggp <- ggplot(pca_coordinates, aes(x=PC1, y=PC2, colour = colour_groups)) +
     geom_point() +
@@ -539,8 +555,10 @@ pc_scores_case <- pc_scores[pc_scores$status == "case",]
 
 run_pca_tests2 <- function(pc_scores, group_var) {
   pc_scores[[group_var]] <- as.factor(pc_scores[[group_var]])
-  group1 <- pc_scores[pc_scores[[group_var]] == levels(pc_scores[[group_var]])[1],]
-  group2 <- pc_scores[pc_scores[[group_var]] == levels(pc_scores[[group_var]])[2],]
+  group1 <- pc_scores[pc_scores[[group_var]] ==
+          levels(pc_scores[[group_var]])[1],]
+  group2 <- pc_scores[pc_scores[[group_var]] ==
+          levels(pc_scores[[group_var]])[2],]
   t_test_results <- c()
   wilcox_test_results <- c()
   for (i in 1:4) {
@@ -548,10 +566,12 @@ run_pca_tests2 <- function(pc_scores, group_var) {
     shapiro_group1 <- shapiro.test(group1[[pc_col]])$p.value
     shapiro_group2 <- shapiro.test(group2[[pc_col]])$p.value
     if (shapiro_group1 > 0.05 && shapiro_group2 > 0.05) {
-      t_test_results[pc_col] <- t.test(group1[[pc_col]], group2[[pc_col]])$p.value
+      t_test_results[pc_col] <- t.test(group1[[pc_col]],
+          group2[[pc_col]])$p.value
       wilcox_test_results[pc_col] <- NA  # NA because t-test is appropriate
     } else {
-      wilcox_test_results[pc_col] <- wilcox.test(group1[[pc_col]], group2[[pc_col]])$p.value
+      wilcox_test_results[pc_col] <- wilcox.test(group1[[pc_col]],
+          group2[[pc_col]])$p.value
       t_test_results[pc_col] <- NA  # NA because Wilcoxon test is appropriate
     }
   }
@@ -562,7 +582,8 @@ run_pca_tests2 <- function(pc_scores, group_var) {
   )
 }
 
-# Run the tests for TB status (main factor of interest) and sex (strong visual relationship on P3 and P4)
+# Run the tests for TB status (main factor of interest) and sex (strong visual
+# relationship on P3 and P4)
 pca_tb_results <- run_pca_tests2(pc_scores, "status")
 pca_tb_results
 pca_sex_results <- run_pca_tests2(pc_scores, "sex")
@@ -616,7 +637,7 @@ n_bp_pc4 <- ggboxplot(pc_scores,x="status",y="PC4", color="status",
                       order=c("case","control"),
                       add="jitter",xlab=F,outlier.shape=NA)
 
-n_bp_pc4 <-n_bp_pc4+stat_compare_means(method = "t.test") +
+n_bp_pc4 <- n_bp_pc4+stat_compare_means(method = "t.test") +
   theme(legend.position = "none", text = element_text(size =12))
 
 n_bp_pc4
@@ -625,12 +646,16 @@ n_bp_pc4
 
 #### BLOOD PCA ####
 
-#Bring in your counts data and coldata
+# Bring in your counts data and coldata
 # coldata_blood: 40 obs 19 variables
 # counts_blood : 15787 obs, 40 columns
-#have been wrangled with following steps - removed low count genes, non useful genes, removed 3 outlier samples, have given them gene names
-counts_data_blood <- read.csv("data/bloodcounts.csv", header=TRUE, row.names = 1)
-coldata_blood <- read.csv("data/bloodcoldata.csv", header=TRUE, row.names = 1)
+# have been wrangled with following steps - removed low count genes,
+# non useful genes, removed 3 outlier samples, have given them gene names
+
+counts_data_blood <- read.csv("data/bloodcounts.csv",
+    header=TRUE, row.names = 1)
+coldata_blood <- read.csv("data/bloodcoldata.csv",
+    header=TRUE, row.names = 1)
 coldata_blood <- coldata_blood %>%
   dplyr::mutate(
     status = factor(status, levels = c("control", "case")),
@@ -697,7 +722,8 @@ pc_scores
 pc_scores_control <- pc_scores[pc_scores$status == "control",]
 pc_scores_case <- pc_scores[pc_scores$status == "case",]
 
-# Run the tests for TB status (main factor of interest) and sex (strong relationship on P3 and P4)
+# Run the tests for TB status (main factor of interest) and sex (strong
+# relationship on P3 and P4)
 pca_tb_results <- run_pca_tests2(pc_scores, "status")
 pca_tb_results
 pca_sex_results <- run_pca_tests2(pc_scores, "sex")
@@ -752,7 +778,8 @@ b_bp_pc1 <- ggboxplot(pc_scores,x="status",y="PC1", color="status",
                       order=c("case","control"),
                       add="jitter",xlab=F,outlier.shape=NA)
 
-b_bp_pc1 <-b_bp_pc1+stat_compare_means(method = "t.test", label.y = max(pc_scores$PC1) + 2) +
+b_bp_pc1 <- b_bp_pc1 + stat_compare_means(method = "t.test",
+    label.y = max(pc_scores$PC1) + 2) +
   theme(legend.position = "none", text = element_text(size =12))
 
 
@@ -769,7 +796,7 @@ Fig1 <- cowplot::plot_grid(n_pca_p3and4,
                            b_pca_pc1and2,
                            n_bp_pc4,
                            b_bp_pc1,
-                           ncol=2, labels=LETTERS[1:2:3:4])
+                           ncol=2, labels=LETTERS[1:4])
 
 Fig1
 
@@ -794,25 +821,28 @@ stack_pair_no_legend <- function(p_top, p_bottom, align = "hv") {
   return(pair)
 }
 
-pair_gender  <- stack_pair_no_legend(n_pca_gender1_2,  n_pca_gender3_4)
-pair_stage  <- stack_pair_no_legend(n_pca_stage1_2,  n_pca_stage3_4)
-pair_cd4cont  <- stack_pair_no_legend(n_pca_cd4cont1_2,  n_pca_cd4cont3_4)
-pair_age  <- stack_pair_no_legend(n_pca_agecont1_2,  n_pca_agecont3_4)
+pair_gender  <- stack_pair_no_legend(n_pca_gender1_2, n_pca_gender3_4)
+pair_stage  <- stack_pair_no_legend(n_pca_stage1_2, n_pca_stage3_4)
+pair_cd4cont  <- stack_pair_no_legend(n_pca_cd4cont1_2, n_pca_cd4cont3_4)
+pair_age  <- stack_pair_no_legend(n_pca_agecont1_2, n_pca_agecont3_4)
 
 
-clinical <- cowplot::plot_grid(
-  pair_gender, pair_stage, pair_cd4cont, pair_age,
-  ncol = 4, align = "hv"
-)
+clinical <- cowplot::plot_grid(pair_gender, pair_stage, pair_cd4cont, pair_age,
+  ncol = 4, align = "hv")
 
 
-title_row <- ggdraw() + draw_label("PCA for nasal variables", size = 20, x = 0.5, hjust = 0.5)
+title_row <- ggdraw() + draw_label("PCA for nasal variables",
+    size = 20, x = 0.5, hjust = 0.5)
 
 
-sub1 <- ggdraw() + draw_label("Sex", fontface = "plain", size = 14, x = 0.5, hjust = 0.5)
-sub2 <- ggdraw() + draw_label("HIV stage", fontface = "plain", size = 14, x = 0.5, hjust = 0.5)
-sub3 <- ggdraw() + draw_label("CD4 count", fontface = "plain", size = 14, x = 0.5, hjust = 0.5)
-sub4 <- ggdraw() + draw_label("Age", fontface = "plain", size = 14, x = 0.5, hjust = 0.5)
+sub1 <- ggdraw() + draw_label("Sex",
+    fontface = "plain", size = 14, x = 0.5, hjust = 0.5)
+sub2 <- ggdraw() + draw_label("HIV stage",
+    fontface = "plain", size = 14, x = 0.5, hjust = 0.5)
+sub3 <- ggdraw() + draw_label("CD4 count",
+    fontface = "plain", size = 14, x = 0.5, hjust = 0.5)
+sub4 <- ggdraw() + draw_label("Age",
+    fontface = "plain", size = 14, x = 0.5, hjust = 0.5)
 
 
 subtitle_row <- cowplot::plot_grid(sub1, sub2, sub3, sub4, ncol = 4)
@@ -842,23 +872,26 @@ b_pca_stage3_4
 b_pca_cd4cont3_4
 b_pca_agecont3_4
 
-pair_gender  <- stack_pair_no_legend(b_pca_gender1_2,  b_pca_gender3_4)
-pair_stage  <- stack_pair_no_legend(b_pca_stage1_2,  b_pca_stage3_4)
-pair_cd4cont  <- stack_pair_no_legend(b_pca_cd4cont1_2,  b_pca_cd4cont3_4)
-pair_age  <- stack_pair_no_legend(b_pca_agecont1_2,  b_pca_agecont3_4)
+pair_gender  <- stack_pair_no_legend(b_pca_gender1_2, b_pca_gender3_4)
+pair_stage  <- stack_pair_no_legend(b_pca_stage1_2, b_pca_stage3_4)
+pair_cd4cont  <- stack_pair_no_legend(b_pca_cd4cont1_2, b_pca_cd4cont3_4)
+pair_age  <- stack_pair_no_legend(b_pca_agecont1_2, b_pca_agecont3_4)
 
-clinical <- cowplot::plot_grid(
-  pair_gender, pair_stage, pair_cd4cont, pair_age,
-  ncol = 4, align = "hv"
-)
+clinical <- cowplot::plot_grid(pair_gender, pair_stage, pair_cd4cont, pair_age,
+  ncol = 4, align = "hv")
 
-title_row <- ggdraw() + draw_label("PCA for blood variables", size = 20, x = 0.5, hjust = 0.5)
+title_row <- ggdraw() + draw_label("PCA for blood variables",
+    size = 20, x = 0.5, hjust = 0.5)
 
 
-sub1 <- ggdraw() + draw_label("Sex", fontface = "plain", size = 14, x = 0.5, hjust = 0.5)
-sub2 <- ggdraw() + draw_label("HIV stage", fontface = "plain", size = 14, x = 0.5, hjust = 0.5)
-sub3 <- ggdraw() + draw_label("CD4 count", fontface = "plain", size = 14, x = 0.5, hjust = 0.5)
-sub4 <- ggdraw() + draw_label("Age", fontface = "plain", size = 14, x = 0.5, hjust = 0.5)
+sub1 <- ggdraw() + draw_label("Sex",
+    fontface = "plain", size = 14, x = 0.5, hjust = 0.5)
+sub2 <- ggdraw() + draw_label("HIV stage",
+    fontface = "plain", size = 14, x = 0.5, hjust = 0.5)
+sub3 <- ggdraw() + draw_label("CD4 count",
+    fontface = "plain", size = 14, x = 0.5, hjust = 0.5)
+sub4 <- ggdraw() + draw_label("Age",
+    fontface = "plain", size = 14, x = 0.5, hjust = 0.5)
 
 
 
@@ -884,7 +917,9 @@ str(coldata)
 batch <- factor(coldata$sex)
 sample_group <- factor(coldata$status)
 str(coldata)
-counts_corrected <- ComBat_seq(as.matrix(counts_data), batch=batch, group=sample_group)
+counts_corrected <- ComBat_seq(as.matrix(counts_data),
+    batch=batch,
+    group=sample_group)
 
 
 dds <- DESeqDataSetFromMatrix(countData = counts_corrected,
@@ -941,8 +976,9 @@ n_bp_pc3_corr <- ggboxplot(pc_scores,x="status",y="PC3", color="status",
                            order=c("case","control"),
                            add="jitter",xlab=F,outlier.shape=NA)
 
-n_bp_pc3_corr<-n_bp_pc3_corr+stat_compare_means(method = "t.test", label.y = max(pc_scores$PC3) + 2.5) +
-  theme(legend.position = "none", text = element_text(size =12))
+n_bp_pc3_corr <- n_bp_pc3_corr +
+    stat_compare_means(method = "t.test", label.y = max(pc_scores$PC3) + 2.5) +
+    theme(legend.position = "none", text = element_text(size =12))
 
 n_bp_pc3_corr
 
@@ -954,7 +990,9 @@ str(coldata_blood)
 batch <- factor(coldata_blood$sex)
 sample_group <- factor(coldata_blood$status)
 str(coldata_blood)
-counts_corrected_blood <- ComBat_seq(as.matrix(counts_data_blood), batch=batch, group=sample_group)
+counts_corrected_blood <- ComBat_seq(as.matrix(counts_data_blood),
+    batch=batch,
+    group=sample_group)
 dds <- DESeqDataSetFromMatrix(countData = counts_corrected_blood,
                               colData = coldata_blood,
                               design = ~ status)
@@ -1006,14 +1044,14 @@ print(p_values_table)
 
 #### PCA for panelled figs - blood ####
 b_pca_pc1and2_corr <- make_pc1_pc2(coldata_blood$status, vsd)
-b_bp_pc1_corr <- ggboxplot(pc_scores,x="status",y="PC1", color="status",
+b_bp_pc1_corr <- ggboxplot(pc_scores, x="status", y="PC1", color="status",
                            palette=c("#00BFC4","#F8766D"),
                            order=c("case","control"),
-                           add="jitter",xlab=F,outlier.shape=NA)
+                           add="jitter", xlab=F, outlier.shape=NA)
 
-b_bp_pc1_corr <- b_bp_pc1_corr + stat_compare_means(method = "t.test",
-    label.y = max(pc_scores$PC1) + 2.5) +
-    theme(legend.position = "none", text = element_text(size =12))
+b_bp_pc1_corr <- b_bp_pc1_corr +
+    stat_compare_means(method = "t.test", label.y = max(pc_scores$PC1) + 2.5) +
+    theme(legend.position = "none", text = element_text(size = 12))
 
 
 #### PANELLED FIGURE ####
@@ -1027,5 +1065,4 @@ b_bp_pc1_corr
 Fig2 <- cowplot::plot_grid(n_pca_p3and4_corr,
                            b_pca_pc1and2_corr,
                            n_bp_pc3_corr,
-                           b_bp_pc1_corr, ncol=2, labels=LETTERS[1:2:3:4])
-
+                           b_bp_pc1_corr, ncol=2, labels=LETTERS[1:4])
