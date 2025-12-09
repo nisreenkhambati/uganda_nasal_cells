@@ -11,10 +11,10 @@ library(tidyverse)
 library(TBSignatureProfiler)
 library(SummarizedExperiment)
 library(pROC)
-library("HGNChelper")
+library(HGNChelper)
 
 
-#update boxplot function
+# update boxplot function
 signatureBoxplot <- function (inputData, annotationData, signatureColNames,
     annotationColName, name = "Signatures", scale = FALSE, violinPlot = FALSE,
     includePoints = TRUE, notch = FALSE, rotateLabels = FALSE, nrow = NULL,
@@ -30,10 +30,10 @@ signatureBoxplot <- function (inputData, annotationData, signatureColNames,
     if (!all(annotationColName %in% colnames(SummarizedExperiment::colData(inputData)))) {
       stop("Annotation column name not found in inputData.")
     }
-    annotationData <- data.frame(SummarizedExperiment::colData(inputData)[,
-                                                                          annotationColName, drop = FALSE])
-    inputData <- data.frame(SummarizedExperiment::colData(inputData)[,
-                                                                     signatureColNames, drop = FALSE])
+    annotationData <- data.frame(
+        SummarizedExperiment::colData(inputData)[,annotationColName, drop = FALSE])
+    inputData <- data.frame(
+        SummarizedExperiment::colData(inputData)[,signatureColNames, drop = FALSE])
   }
   else {
     if (ncol(annotationData) != 1) {
@@ -73,24 +73,26 @@ signatureBoxplot <- function (inputData, annotationData, signatureColNames,
                                                                  1])
   boxplotdfm <- reshape2::melt(boxplotdf, value.name = "Score",
                                variable.name = "Signature", id.vars = "Group")
-  theplot <- ggplot2::ggplot(boxplotdfm, ggplot2::aes(Group,
-                                                      Score)) + ggplot2::facet_wrap(~Signature, scales = "free",
-                                                                                    nrow = nrow, ncol = ncol)
+  theplot <- ggplot2::ggplot(boxplotdfm, ggplot2::aes(Group, Score)) +
+      ggplot2::facet_wrap(~Signature, scales = "free", nrow = nrow, ncol = ncol)
   if (violinPlot) {
-    theplot <- theplot + ggplot2::geom_violin(ggplot2::aes(fill = Group)) +
-      ggplot2::theme_classic()
+    theplot <- theplot +
+        ggplot2::geom_violin(ggplot2::aes(fill = Group)) +
+        ggplot2::theme_classic()
   }
   else {
-    theplot <- theplot + ggplot2::geom_boxplot(outlier.shape = NA,
-                                               ggplot2::aes(fill = Group), notch = notch) +
-      ggplot2::theme_classic()
+    theplot <- theplot +
+        ggplot2::geom_boxplot(outlier.shape = NA,
+            ggplot2::aes(fill = Group), notch = notch) +
+        ggplot2::theme_classic()
   }
   if (includePoints) {
-    theplot <- theplot + ggplot2::geom_point(position = ggplot2::position_jitter(width = 0.1))
+    theplot <- theplot +
+        ggplot2::geom_point(position = ggplot2::position_jitter(width = 0.1))
   }
   if (rotateLabels) {
-    theplot <- theplot + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90,
-                                                                            hjust = 1))
+    theplot <- theplot +
+        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1))
   }
   # Check and apply custom colors
   if (!is.null(fill_colors)) {
@@ -118,8 +120,9 @@ coldata <- coldata[, c(2,3)]
 colnames(coldata) <- c("sample", "sample_group")
 coldata$sample <- row.names(coldata)
 coldata <- coldata %>%
-  dplyr::mutate(sample_group = factor(sample_group, levels = c("control", "case")))
-str(coldata) #
+  dplyr::mutate(sample_group = factor(sample_group,
+      levels = c("control", "case")))
+str(coldata)
 
 all(rownames(coldata) %in% colnames(counts_data))
 all(rownames(coldata) == colnames(counts_data))
@@ -129,7 +132,8 @@ counts <- counts_data
 
 
 #### Make summarised experiment ####
-hivtb_data<- SummarizedExperiment(assays=list(counts=as.matrix(counts)), colData = coldata)
+hivtb_data<- SummarizedExperiment(assays = list(counts = as.matrix(counts)),
+    colData = coldata)
 hivtb_data <- mkAssay(hivtb_data, log = TRUE, counts_to_CPM = TRUE)
 
 #### Subset signatures for Diagnosis only ####
@@ -208,9 +212,11 @@ sigs_gsva_seq<- table_AUC_diag_gsva59 %>%  filter(AUC >= 0.7 & P.value <0.05)
 sigs <- c("Natarajan_7", "Sloot_HIV_2", "Jacobsen_3", "Gjoen_10" )
 set.seed(0)
 nasal_gsva_seq <- signatureBoxplot(inputData = gsva_result,
-                                   name = "Significant Diagnostic Signatures in Nasal Dataset, GSVA",
-                                   signatureColNames = sigs,
-                                   annotationColName = "sample_group", rotateLabels = FALSE, fill_colors = custom_colors # Pass the custom colors
+    name = "Significant Diagnostic Signatures in Nasal Dataset, GSVA",
+    signatureColNames = sigs,
+    annotationColName = "sample_group",
+    rotateLabels = FALSE,
+    fill_colors = custom_colors # Pass the custom colors
 )
 
 
@@ -229,7 +235,8 @@ colnames(coldata_blood) <- c("sample", "sample_group")
 coldata_blood$sample <- row.names(coldata_blood)
 
 coldata_blood <- coldata_blood %>%
-  dplyr::mutate(sample_group = factor(sample_group, levels = c("control", "case")))
+  dplyr::mutate(sample_group = factor(sample_group,
+      levels = c("control", "case")))
 str(coldata_blood)
 
 # final check
@@ -243,7 +250,8 @@ counts_blood <- counts_data_blood
 
 #### Make summarised experiment ####
 
-hivtb_data<- SummarizedExperiment(assays=list(counts=as.matrix(counts_blood)), colData = coldata_blood)
+hivtb_data<- SummarizedExperiment(assays = list(counts = as.matrix(counts_blood)),
+    colData = coldata_blood)
 hivtb_data <- mkAssay(hivtb_data, log = TRUE, counts_to_CPM = TRUE)
 
 
@@ -291,11 +299,11 @@ sigs_ssgsea_seq_10_blood <- table_AUC_diag_ssgsea59_blood %>%
 custom_colors <- c("case" = "#00BFC4", "control" = "#F8766D")
 set.seed(0)
 blood_ssGSEA_seq <- signatureBoxplot(inputData = ssgsea_result,
-                                     name = "Significant Diagnostic Signatures in Blood Dataset*, ssGSEA",
-                                     signatureColNames = sigs_ssgsea_seq_10_blood$Signature,
-                                     annotationColName = "sample_group", rotateLabels = FALSE,
-                                     fill_colors = custom_colors
-)
+    name = "Significant Diagnostic Signatures in Blood Dataset*, ssGSEA",
+    signatureColNames = sigs_ssgsea_seq_10_blood$Signature,
+    annotationColName = "sample_group",
+    rotateLabels = FALSE,
+    fill_colors = custom_colors)
 
 
 #### Run the TBSignatureProfiler: GSVA method ####
@@ -337,11 +345,11 @@ sigs_gsva_seq_10_blood <- table_AUC_diag_gsva59_blood %>%
 
 set.seed(0)
 blood_gsva_seq <- signatureBoxplot(inputData = gsva_result,
-                                   name = "Significant Diagnostic Signatures in Blood Dataset*, GSVA",
-                                   signatureColNames = sigs_gsva_seq_10_blood$Signature,
-                                   annotationColName = "sample_group", rotateLabels = FALSE,
-                                   fill_colors = custom_colors
-)
+    name = "Significant Diagnostic Signatures in Blood Dataset*, GSVA",
+    signatureColNames = sigs_gsva_seq_10_blood$Signature,
+    annotationColName = "sample_group",
+    rotateLabels = FALSE,
+    fill_colors = custom_colors)
 
 blood_gsva_seq
 blood_ssGSEA_seq
@@ -371,10 +379,18 @@ legend_theme <- theme(
   legend.text = element_text(size = 14)    # Adjust legend text size
 )
 
-nasal_ssGSEA_seq2 <- nasal_ssGSEA_seq + legend_theme + theme(legend.position = "none")
-blood_ssGSEA_seq2 <- blood_ssGSEA_seq + legend_theme + theme(legend.position = "none")
-nasal_gsva_seq2 <- nasal_gsva_seq + legend_theme + theme(legend.position = "none")
-blood_gsva_seq2 <- blood_gsva_seq + legend_theme + theme(legend.position = "none")
+nasal_ssGSEA_seq2 <- nasal_ssGSEA_seq +
+    legend_theme +
+    theme(legend.position = "none")
+blood_ssGSEA_seq2 <- blood_ssGSEA_seq +
+    legend_theme +
+    theme(legend.position = "none")
+nasal_gsva_seq2 <- nasal_gsva_seq +
+    legend_theme +
+    theme(legend.position = "none")
+blood_gsva_seq2 <- blood_gsva_seq +
+    legend_theme +
+    theme(legend.position = "none")
 
 
 legend <- cowplot::get_legend(
@@ -383,7 +399,12 @@ legend <- cowplot::get_legend(
 
 
 tbsp_nasal_blood <- cowplot::plot_grid(
-  cowplot::plot_grid(nasal_ssGSEA_seq2, blood_ssGSEA_seq2, nasal_gsva_seq2, blood_gsva_seq2, ncol = 2, labels = LETTERS[1:4]),
+  cowplot::plot_grid(nasal_ssGSEA_seq2,
+      blood_ssGSEA_seq2,
+      nasal_gsva_seq2,
+      blood_gsva_seq2,
+      ncol = 2,
+      labels = LETTERS[1:4]),
   legend,
   ncol = 2,
   rel_widths = c(1.5, 0.2)
