@@ -21,6 +21,8 @@ library(circlize)
 library(ggrepel)
 library(ComplexHeatmap)
 library(GenomicFeatures)
+library(ggarchery)
+library(txdbmaker)
 
 #### GSEA ENRICHMENT ANALYSIS ####
 
@@ -43,7 +45,7 @@ head(ranks, 20)
 class(ranks)
 
 #### Hallmark gene sets ####
-pathways.hallmark <- gmtPathways("h.all.v2023.2.Hs.symbols.gmt.txt")
+pathways.hallmark <- gmtPathways("data/h.all.v2023.2.Hs.symbols.gmt.txt")
 head(pathways.hallmark)
 
 # run the fgsea function
@@ -62,7 +64,7 @@ fgseaRes.p<- fgseaRes %>%
 fgseaRes.p.sub <- fgseaRes.p[1:20,]
 
 #### KEGG pathways ####
-pathways.kegg <- gmtPathways("c2.cp.kegg_legacy.v2023.2.Hs.symbols.gmt.txt")
+pathways.kegg <- gmtPathways("data/c2.cp.kegg_legacy.v2023.2.Hs.symbols.gmt.txt")
 head(pathways.kegg)
 
 # run the fgsea function
@@ -84,7 +86,7 @@ fgseaRes.p.sub <- fgseaRes.p[1:20,]
 
 #### Reactome database ####
 
-pathways.reactome <- gmtPathways("c2.cp.reactome.v2023.2.Hs.symbols.gmt.txt")
+pathways.reactome <- gmtPathways("data/c2.cp.reactome.v2023.2.Hs.symbols.gmt.txt")
 head(pathways.reactome)
 
 # run the fgsea function
@@ -119,7 +121,7 @@ head(ranks, 20)
 class(ranks)
 
 #### Hallmark gene sets ####
-pathways.hallmark <- gmtPathways("h.all.v2023.2.Hs.symbols.gmt.txt")
+pathways.hallmark <- gmtPathways("data/h.all.v2023.2.Hs.symbols.gmt.txt")
 head(pathways.hallmark)
 
 
@@ -140,7 +142,7 @@ fgseaRes.p<- fgseaRes %>%
 fgseaRes.p.sub <- fgseaRes.p[1:20,]
 
 #### KEGG pathways ####
-pathways.kegg <- gmtPathways("c2.cp.kegg_legacy.v2023.2.Hs.symbols.gmt.txt")
+pathways.kegg <- gmtPathways("data/c2.cp.kegg_legacy.v2023.2.Hs.symbols.gmt.txt")
 head(pathways.kegg)
 
 # run the fgsea function
@@ -161,7 +163,7 @@ fgseaRes.p.sub <- fgseaRes.p[1:20,]
 
 #### Reactome database ####
 
-pathways.reactome <- gmtPathways("c2.cp.reactome.v2023.2.Hs.symbols.gmt.txt")
+pathways.reactome <- gmtPathways("data/c2.cp.reactome.v2023.2.Hs.symbols.gmt.txt")
 head(pathways.reactome)
 
 # run the fgsea function
@@ -240,10 +242,18 @@ do_pathway <- function(organism_db, genes)
   library(clusterProfiler)
 
   # converts from ensembl Symbols to Entrez
-  sig_genes_entrez <- bitr(genes, fromType = "SYMBOL", toType = "ENTREZID", OrgDb = organism_db)
+  sig_genes_entrez <- bitr(genes,
+      fromType = "SYMBOL",
+      toType = "ENTREZID",
+      OrgDb = organism_db)
 
   # gets the enrichment
-  pathway_data <- enrichGO(gene = sig_genes_entrez$ENTREZID,OrgDb = organism_db, readable = T,ont = "BP", pvalueCutoff = 0.1, qvalueCutoff = 0.10)
+  pathway_data <- enrichGO(gene = sig_genes_entrez$ENTREZID,
+      OrgDb = organism_db,
+      readable = T,
+      ont = "BP",
+      pvalueCutoff = 0.1,
+      qvalueCutoff = 0.10)
 
   # add this check right here
   if (is.null(pathway_data) || nrow(as.data.frame(pathway_data)) == 0) {
@@ -357,10 +367,18 @@ do_pathway <- function(organism_db, genes)
   library(clusterProfiler)
 
   # converts from ensembl Symbols to Entrez
-  sig_genes_entrez <- bitr(genes, fromType = "SYMBOL", toType = "ENTREZID", OrgDb = organism_db)
+  sig_genes_entrez <- bitr(genes,
+      fromType = "SYMBOL",
+      toType = "ENTREZID",
+      OrgDb = organism_db)
 
   # gets the enrichment
-  pathway_data <- enrichGO(gene = sig_genes_entrez$ENTREZID, OrgDb = organism_db, readable = T, ont = "BP", pvalueCutoff = 0.05, qvalueCutoff = 0.10)
+  pathway_data <- enrichGO(gene = sig_genes_entrez$ENTREZID,
+      OrgDb = organism_db,
+      readable = T,
+      ont = "BP",
+      pvalueCutoff = 0.05,
+      qvalueCutoff = 0.10)
 
   # add this check right here
   if (is.null(pathway_data) || nrow(as.data.frame(pathway_data)) == 0) {
@@ -428,27 +446,26 @@ cowplot::plot_grid(nasal_up_dotplot,
                    blood_up_dotplot,
                    nasal_down_dotplot,
                    blood_down_dotplot,
-                   ncol=2, labels=LETTERS[1:2:3:4])
+                   ncol=2,
+                   labels=LETTERS[1:4])
 
 
 
 title_row <- cowplot::plot_grid(
   cowplot::ggdraw() + cowplot::draw_label("Nasal", fontface = "bold", size = 14),
   cowplot::ggdraw() + cowplot::draw_label("Blood", fontface = "bold", size = 14),
-  ncol = 2
-)
+  ncol = 2)
 
 plot_grid_with_labels <- cowplot::plot_grid(nasal_up_dotplot,
                                             blood_up_dotplot,
                                             nasal_down_dotplot,
                                             blood_down_dotplot,
-                                            ncol=2, labels=LETTERS[1:2:3:4])
+                                            ncol=2,
+                                            labels=LETTERS[1:4])
 
 
-final_plot_1 <- cowplot::plot_grid(
-  title_row, plot_grid_with_labels,
-  ncol = 1, rel_heights = c(0.05, 1)
-)
+final_plot_1 <- cowplot::plot_grid(title_row, plot_grid_with_labels,
+  ncol = 1, rel_heights = c(0.05, 1))
 
 print(final_plot_1)
 
@@ -473,25 +490,37 @@ str(coldata)
 
 # gene length
 
-# need to download GTF annotation file from https://www.gencodegenes.org/human/release_44.html)
-# GTF file is comprehensive gene annotation on the primary assembly (chromosomes and scaffolds) sequence regions (Release 44 -GRCh38.p14)
-txdb <- makeTxDbFromGFF("gencode.v44.primary_assembly.annotation.gtf", format="gtf")
+# need to download GTF annotation file from
+# https://www.gencodegenes.org/human/release_44.html)
+# GTF file is comprehensive gene annotation on the primary assembly (chromosomes
+# and scaffolds - PRI Regions) sequence regions (Release 44 -GRCh38.p14)
+
+txdb <- txdbmaker::makeTxDbFromGFF(
+    "gencode.v44.primary_assembly.annotation.gtf", format="gtf")
 exons.list.per.gene <- exonsBy(txdb,by="gene")
 head(exons.list.per.gene )
 exonic.gene.sizes <- as.data.frame(sum(width(GenomicRanges::reduce(exons.list.per.gene))))
 head(exonic.gene.sizes)
 names(exonic.gene.sizes) <- "gene_length"
-exonic.gene.sizes.df <- data.frame(ensembl_gene_id_version = rownames(exonic.gene.sizes), exonic.gene.sizes, row.names = NULL)
+exonic.gene.sizes.df <- data.frame(
+    ensembl_gene_id_version = rownames(exonic.gene.sizes),
+    exonic.gene.sizes,
+    row.names = NULL)
 head(exonic.gene.sizes.df)
-genes <-read.delim("data/genes_annotation_final.txt", header = TRUE, sep = "\t", dec=".")
-genes_test <- merge(genes, exonic.gene.sizes.df, by = "ensembl_gene_id_version", all.x = TRUE)
+genes <- read.delim("data/genes_annotation_final.txt",
+    header = TRUE, sep = "\t", dec=".")
+genes_test <- merge(genes, exonic.gene.sizes.df,
+    by = "ensembl_gene_id_version", all.x = TRUE)
 any(is.na(genes_test$gene_length)) #FALSE
 
 
 # conversion to TPM #
-gene_lengths_kb <- genes_test$gene_length[match(row.names(counts_data), genes_test$external_gene_name)] / 1000
+gene_lengths_kb <- genes_test$gene_length[match(row.names(counts_data),
+    genes_test$external_gene_name)] / 1000
 any(is.na(gene_lengths_kb))
-identical(rownames(counts_data), genes_test$external_gene_name[match(rownames(counts_data), genes_test$external_gene_name)]) #TRUE
+identical(rownames(counts_data),
+    genes_test$external_gene_name[match(rownames(counts_data),
+        genes_test$external_gene_name)]) #TRUE
 
 # Calculate RPK (Reads Per Kilobase)
 rpk <- sweep(counts_data, 1, gene_lengths_kb, FUN = "/")
@@ -502,13 +531,17 @@ counts_data_tpm  <- na.omit(counts_data_tpm)
 
 
 #### Run cibersort ####
-# Run this count_data_tpm matrix using the "Impute Cell Fractions" analysis module on the CIBERSORTX website
-# Run with B-mode batch correction enabled, disable quantile normalization true, run in relative mode, and set permutations 500 (recommended is >=100)
+# Run this count_data_tpm matrix using the "Impute Cell Fractions" analysis
+# module on the CIBERSORTX website
+# Run with B-mode batch correction enabled, disable quantile normalization true,
+# run in relative mode, and set permutations 500 (recommended is >=100)
 # Source GEP file used for batch correction: LM22.update-gene-symbols.txt
-# The output includes a p-value for the global deconvolution of each sample. A p-value threshold <0.05 is recommended.
+# The output includes a p-value for the global deconvolution of each sample. A
+# p-value threshold <0.05 is recommended.
 
 #### Analyse NASAL CIBERSORT ####
-cibersort <- read.delim("data/CIBERSORTx_Job2_Adjusted.txt", header = TRUE, sep = "\t", dec = ".")
+cibersort <- read.delim("data/CIBERSORTx_Job2_Adjusted.txt",
+    header = TRUE, sep = "\t", dec = ".")
 names(cibersort) <- gsub(x = names(cibersort), pattern = "\\.", replacement = "_")
 row.names(cibersort) <- cibersort$Mixture
 cibersort <- cibersort[,c(2:23)]
@@ -517,14 +550,33 @@ print(row_sums)
 
 # Combining columns of LM22 cell sub-types
 cibersort$B_cells <- cibersort$B_cells_naive + cibersort$B_cells_memory
-cibersort$T_cells_CD4 <- cibersort$T_cells_CD4_naive + cibersort$T_cells_CD4_memory_resting + cibersort$T_cells_CD4_memory_activated + cibersort$T_cells_follicular_helper +
-  cibersort$T_cells_regulatory__Tregs_
+cibersort$T_cells_CD4 <- cibersort$T_cells_CD4_naive +
+    cibersort$T_cells_CD4_memory_resting +
+    cibersort$T_cells_CD4_memory_activated +
+    cibersort$T_cells_follicular_helper +
+    cibersort$T_cells_regulatory__Tregs_
 cibersort$T_cells_gamma_delta <- cibersort$T_cells_gamma_delta
 cibersort$NK_cells <- cibersort$NK_cells_resting + cibersort$NK_cells_activated
-cibersort$Mono_Macrophages <- cibersort$Monocytes + cibersort$Macrophages_M0 + cibersort$Macrophages_M1 + cibersort$Macrophages_M2
-cibersort$Dendritic_cells <- cibersort$Dendritic_cells_resting + cibersort$Dendritic_cells_activated
-cibersort$Mast_cells <- cibersort$Mast_cells_resting + cibersort$Mast_cells_activated
-cibersort_subset <- cibersort %>% dplyr::select(B_cells, T_cells_CD8, T_cells_CD4, T_cells_gamma_delta, Mono_Macrophages, Neutrophils, NK_cells, Dendritic_cells, Eosinophils, Mast_cells, Plasma_cells)
+cibersort$Mono_Macrophages <- cibersort$Monocytes +
+    cibersort$Macrophages_M0 +
+    cibersort$Macrophages_M1 +
+    cibersort$Macrophages_M2
+cibersort$Dendritic_cells <- cibersort$Dendritic_cells_resting +
+    cibersort$Dendritic_cells_activated
+cibersort$Mast_cells <- cibersort$Mast_cells_resting +
+    cibersort$Mast_cells_activated
+cibersort_subset <- cibersort %>%
+    dplyr::select(B_cells,
+        T_cells_CD8,
+        T_cells_CD4,
+        T_cells_gamma_delta,
+        Mono_Macrophages,
+        Neutrophils,
+        NK_cells,
+        Dendritic_cells,
+        Eosinophils,
+        Mast_cells,
+        Plasma_cells)
 row_sums <- rowSums(cibersort_subset)
 print(row_sums)
 
@@ -533,7 +585,18 @@ cibersort_metadata <- merge(coldata, cibersort_subset, by='row.names')
 row.names(cibersort_metadata) <- cibersort_metadata$Row.names
 cibersort_metadata$Row.names <- NULL
 cibersort_metadata <- cibersort_metadata %>%
-  dplyr::select (status, B_cells, T_cells_CD8, T_cells_CD4, T_cells_gamma_delta, Mono_Macrophages, Neutrophils, NK_cells, Dendritic_cells, Eosinophils, Mast_cells, Plasma_cells)
+  dplyr::select (status,
+      B_cells,
+      T_cells_CD8,
+      T_cells_CD4,
+      T_cells_gamma_delta,
+      Mono_Macrophages,
+      Neutrophils,
+      NK_cells,
+      Dendritic_cells,
+      Eosinophils,
+      Mast_cells,
+      Plasma_cells)
 
 
 # summarise the data
@@ -548,7 +611,8 @@ summary_of_cells_case
 
 
 str(cibersort_metadata)
-# filter the cibersort_metadata dataframe to keep only the cell types that are prevalent i.e., appear in at least 50% of the samples.
+# filter the cibersort_metadata dataframe to keep only the cell types that are
+# prevalent i.e., appear in at least 50% of the samples.
 check_prevalence <- function(cell_data, threshold = 0.50) {
   mean(cell_data != 0) >= threshold
 }
@@ -561,13 +625,13 @@ cibersort_metadata <- test
 
 
 
-cibersort_metadata_long <- cibersort_metadata %>% rownames_to_column(var = "Sample")
+cibersort_metadata_long <- cibersort_metadata %>%
+    rownames_to_column(var = "Sample")
 cibersort_metadata_long <- cibersort_metadata_long %>%
   pivot_longer(
     cols = -c(Sample, status),
     names_to = "CellType",
-    values_to = "Proportion"
-  )
+    values_to = "Proportion")
 
 
 cibersort_metadata_long$cell_type2[cibersort_metadata_long$CellType=="B_cells"] <- "B cells"
@@ -584,8 +648,8 @@ cibersort_metadata_long$cell_type2[cibersort_metadata_long$CellType=="Neutrophil
 
 # check for normality
 
-#controls
-shapiro.test(cells_control$B_cells) #
+# controls
+shapiro.test(cells_control$B_cells)
 shapiro.test(cells_control$T_cells_CD8)
 shapiro.test(cells_control$T_cells_CD4)
 shapiro.test(cells_control$Mono_Macrophages)
@@ -642,29 +706,32 @@ t_test_nk <- t.test(cells_control$NK_cells, cells_case$NK_cells)
 nk_p <-t_test_nk$p.value
 
 
-all_p_values <- c(B_cells_p, Neutrophils_p, CD4_p, mast_p, macro_p, CD8_p, eos_p, plasma_p, den_p, nk_p)
+all_p_values <- c(B_cells_p, Neutrophils_p, CD4_p, mast_p, macro_p, CD8_p,
+    eos_p, plasma_p, den_p, nk_p)
 adjusted_p_values <- p.adjust(all_p_values, method = "BH")
 adjusted_p_values_results <- data.frame(
-  Test = c("B_cells", "Neutrophils", "T_cells_CD4", "Mast_cells", "Mono_Macrophages",
-           "T_cells_CD8", "Eosinophils", "Plasma_cells", "Dendritic_cells", "NK_cells"),
+  Test = c("B_cells", "Neutrophils", "T_cells_CD4", "Mast_cells",
+      "Mono_Macrophages", "T_cells_CD8", "Eosinophils", "Plasma_cells",
+      "Dendritic_cells", "NK_cells"),
   Adjusted_p_value = adjusted_p_values
 )
 adjusted_p_values_results
 
 # fig
-nasal_imps <- ggplot(cibersort_metadata_long, aes(x = cell_type2, y = Proportion, fill=status)) +  ylim(0, 0.99) +
+nasal_imps <- ggplot(cibersort_metadata_long,
+  aes(x = cell_type2, y = Proportion, fill=status)) +  ylim(0, 0.99) +
   geom_boxplot() +
   labs(x = "Immune Cell Type", y = "Imputed immune cell proportions") +
   ggtitle("Nasal samples") + # No significant differences in cell populations
   annotate("text", x=1, y=0.96, size=3, label= "p = 0.25") +
   annotate("text", x=2, y=0.96, size=3, label= "p = 0.47") +
-  annotate("text", x=3, y=0.96, size=3, label= "p = 0.75") + #
+  annotate("text", x=3, y=0.96, size=3, label= "p = 0.75") +
   annotate("text", x=4, y=0.96, size=3, label= "p = 0.94") +
   annotate("text", x=5, y=0.96, size=3, label= "p = 0.66") +
   annotate("text", x=6, y=0.96, size=3, label= "p = 0.66") +
-  annotate("text", x=7, y=0.96, size=3, label= "p = 0.66") + #
-  annotate("text", x=8, y=0.96, size=3, label= "p = 0.66") + #
-  annotate("text", x=9, y=0.96, size=3, label= "p = 0.66") + #
+  annotate("text", x=7, y=0.96, size=3, label= "p = 0.66") +
+  annotate("text", x=8, y=0.96, size=3, label= "p = 0.66") +
+  annotate("text", x=9, y=0.96, size=3, label= "p = 0.66") +
   annotate("text", x=10, y=0.96, size=3, label= "p = 0.66") +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 12))
@@ -673,7 +740,8 @@ nasal_imps <- ggplot(cibersort_metadata_long, aes(x = cell_type2, y = Proportion
 
 
 # BLOOD #
-counts_data_blood <- read.csv("data/bloodcounts.csv", header=TRUE, row.names = 1)
+counts_data_blood <- read.csv("data/bloodcounts.csv",
+    header=TRUE, row.names = 1)
 coldata_blood <- read.csv("data/bloodcoldata.csv", header=TRUE, row.names = 1)
 str(coldata_blood)
 coldata_blood <- coldata_blood %>%
@@ -684,9 +752,12 @@ coldata_blood <- coldata_blood %>%
 str(coldata_blood)
 
 # conversion to TPM
-gene_lengths_kb <- genes_test$gene_length[match(row.names(counts_data_blood), genes_test$external_gene_name)] / 1000
+gene_lengths_kb <- genes_test$gene_length[match(row.names(counts_data_blood),
+    genes_test$external_gene_name)] / 1000
 any(is.na(gene_lengths_kb))
-identical(rownames(counts_data_blood), genes_test$external_gene_name[match(rownames(counts_data_blood), genes_test$external_gene_name)])
+identical(rownames(counts_data_blood),
+    genes_test$external_gene_name[match(rownames(counts_data_blood),
+        genes_test$external_gene_name)])
 
 # Calculate RPK (Reads Per Kilobase)
 rpk <- sweep(counts_data_blood, 1, gene_lengths_kb, FUN = "/")
@@ -697,13 +768,17 @@ counts_data_blood_tpm  <- na.omit(counts_data_blood_tpm)
 
 
 #### Run cibersort ####
-# Run this count_data_blood_tpm matrix using the "Impute Cell Fractions" analysis module on the CIBERSORTx website
-# Run with B-mode batch correction enabled, disable quantile normalization true, run in relative mode, and set permutations 500 (recommended is >=100)
+# Run this count_data_blood_tpm matrix using the "Impute Cell Fractions"
+# analysis module on the CIBERSORTx website
+# Run with B-mode batch correction enabled, disable quantile normalization true,
+# run in relative mode, and set permutations 500 (recommended is >=100)
 # Source GEP file used for batch correction: LM22.update-gene-symbols.txt
-# The output includes a p-value for the global deconvolution of each sample. A p-value threshold <0.05 is recommended.
+# The output includes a p-value for the global deconvolution of each sample. A
+# p-value threshold <0.05 is recommended.
 
 #### Analyse BLOOD CIBERSORT ####
-cibersort <- read.delim("data/CIBERSORTx_Job3_Adjusted.txt", header = TRUE, sep = "\t", dec = ".")
+cibersort <- read.delim("data/CIBERSORTx_Job3_Adjusted.txt",
+    header = TRUE, sep = "\t", dec = ".")
 names(cibersort) <- gsub(x = names(cibersort), pattern = "\\.", replacement = "_")
 row.names(cibersort) <- cibersort$Mixture
 cibersort <- cibersort[,c(2:23)]
@@ -713,15 +788,34 @@ print(row_sums)
 
 # Combining columns of LM22 cell types
 cibersort$B_cells <- cibersort$B_cells_naive + cibersort$B_cells_memory
-cibersort$T_cells_CD4 <- cibersort$T_cells_CD4_naive + cibersort$T_cells_CD4_memory_resting + cibersort$T_cells_CD4_memory_activated + cibersort$T_cells_follicular_helper +
-  cibersort$T_cells_regulatory__Tregs_
+cibersort$T_cells_CD4 <- cibersort$T_cells_CD4_naive +
+    cibersort$T_cells_CD4_memory_resting +
+    cibersort$T_cells_CD4_memory_activated +
+    cibersort$T_cells_follicular_helper +
+    cibersort$T_cells_regulatory__Tregs_
 cibersort$T_cells_gamma_delta <- cibersort$T_cells_gamma_delta
 cibersort$NK_cells <- cibersort$NK_cells_resting + cibersort$NK_cells_activated
-cibersort$Mono_Macrophages <- cibersort$Monocytes + cibersort$Macrophages_M0 + cibersort$Macrophages_M1 + cibersort$Macrophages_M2
-cibersort$Dendritic_cells <- cibersort$Dendritic_cells_resting + cibersort$Dendritic_cells_activated
-cibersort$Mast_cells <- cibersort$Mast_cells_resting + cibersort$Mast_cells_activated
+cibersort$Mono_Macrophages <- cibersort$Monocytes +
+    cibersort$Macrophages_M0 +
+    cibersort$Macrophages_M1 +
+    cibersort$Macrophages_M2
+cibersort$Dendritic_cells <- cibersort$Dendritic_cells_resting +
+    cibersort$Dendritic_cells_activated
+cibersort$Mast_cells <- cibersort$Mast_cells_resting +
+    cibersort$Mast_cells_activated
 
-cibersort_subset <- cibersort %>% dplyr::select(B_cells, T_cells_CD8, T_cells_CD4, T_cells_gamma_delta, Mono_Macrophages, Neutrophils, NK_cells, Dendritic_cells, Eosinophils, Mast_cells, Plasma_cells)
+cibersort_subset <- cibersort %>%
+    dplyr::select(B_cells,
+        T_cells_CD8,
+        T_cells_CD4,
+        T_cells_gamma_delta,
+        Mono_Macrophages,
+        Neutrophils,
+        NK_cells,
+        Dendritic_cells,
+        Eosinophils,
+        Mast_cells,
+        Plasma_cells)
 row_sums <- rowSums(cibersort_subset)
 print(row_sums)
 
@@ -729,7 +823,18 @@ cibersort_metadata <- merge(coldata_blood, cibersort_subset, by='row.names')
 row.names(cibersort_metadata) <- cibersort_metadata$Row.names
 cibersort_metadata$Row.names <- NULL
 cibersort_metadata <- cibersort_metadata %>%
-  dplyr::select (status, B_cells, T_cells_CD8, T_cells_CD4, T_cells_gamma_delta, Mono_Macrophages, Neutrophils, NK_cells, Dendritic_cells, Eosinophils, Mast_cells, Plasma_cells)
+  dplyr::select (status,
+      B_cells,
+      T_cells_CD8,
+      T_cells_CD4,
+      T_cells_gamma_delta,
+      Mono_Macrophages,
+      Neutrophils,
+      NK_cells,
+      Dendritic_cells,
+      Eosinophils,
+      Mast_cells,
+      Plasma_cells)
 
 # summarise the blood data
 summary_of_cells <- summary(cibersort_metadata)
@@ -743,7 +848,8 @@ summary_of_cells_case
 
 
 str(cibersort_metadata)
-# filter the cibersort_metadata dataframe to keep only the cell types that are prevalent i.e., appear in at least 50% of the samples.
+# filter the cibersort_metadata dataframe to keep only the cell types that are
+# prevalent i.e., appear in at least 50% of the samples.
 check_prevalence <- function(cell_data, threshold = 0.50) {
   mean(cell_data != 0) >= threshold
 }
@@ -755,7 +861,8 @@ test <- cibersort_metadata[, c("status", cell_types_to_keep)]
 cibersort_metadata <- test
 
 
-cibersort_metadata_long <- cibersort_metadata %>% rownames_to_column(var = "Sample")
+cibersort_metadata_long <- cibersort_metadata %>%
+    rownames_to_column(var = "Sample")
 cibersort_metadata_long <- cibersort_metadata_long %>%
   pivot_longer(
     cols = -c(Sample, status),
@@ -829,16 +936,16 @@ nk_p <-t_test_nk$p.value
 all_p_values <- c(B_cells_p, Neutrophils_p, CD4_p, mast_p, macro_p, CD8_p, den_p, nk_p)
 adjusted_p_values <- p.adjust(all_p_values, method = "BH")
 adjusted_p_values_results <- data.frame(
-  Test = c("B_cells", "Neutrophils", "T_cells_CD4", "Mast_cells", "Mono_Macrophages",
-           "T_cells_CD8", "Dendritic_cells", "NK_cells"),
-  Adjusted_p_value = adjusted_p_values
-)
+  Test = c("B_cells", "Neutrophils", "T_cells_CD4", "Mast_cells",
+      "Mono_Macrophages", "T_cells_CD8", "Dendritic_cells", "NK_cells"),
+  Adjusted_p_value = adjusted_p_values)
 
 adjusted_p_values_results
 
 
 #fig
-blood_imps <- ggplot(cibersort_metadata_long, aes(x = cell_type2, y = Proportion, fill=status)) +  ylim(0, 0.99) +
+blood_imps <- ggplot(cibersort_metadata_long,
+  aes(x = cell_type2, y = Proportion, fill=status)) +  ylim(0, 0.99) +
   geom_boxplot() +
   labs(x = "Immune Cell Type", y = "Imputed immune cell proportions") +
   ggtitle("Blood samples") + # No significant differences in cell populations
