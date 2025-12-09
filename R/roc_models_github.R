@@ -20,7 +20,7 @@ library(cowplot)
 library(ranger)
 library(glmnet)
 library(kernlab)
-libary(pls)
+library(pls)
 
 
 #### Theme   ####
@@ -614,7 +614,7 @@ svm_fit <- train(
 )
 
 fm_model_svm <- evalm(svm_fit, gnames='SVM (linear)', plots="r", fsize=11)
-ggsvm = fm_model_svm$roc + theme_SL2() + theme(legend.position = "bottom")
+ggsvm <- fm_model_svm$roc + theme_SL2() + theme(legend.position = "bottom")
 dev.off()
 fm_model_svm
 
