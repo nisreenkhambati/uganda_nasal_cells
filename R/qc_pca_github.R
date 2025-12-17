@@ -44,7 +44,7 @@ all(colnames(counts_data) %in% rownames(coldata))
 all(colnames(counts_data) == rownames(coldata))
 
 
-# Remove non-useful genes
+# Remove mitochondrial, haemoglobin, ribosomal and RNA genes
 genes <- read.delim("data/genes_annotation_final.txt",
     header = TRUE, sep = "\t", dec=".")
 genes[(duplicated(genes$ensembl_gene_id_version) == TRUE),]
@@ -63,7 +63,7 @@ counts_data <-  counts_data[,-36]
 colnames(counts_data)
 
 
-# Filter for genes with a median >= 0
+# Filter for genes with low overall expression
 counts_data <- subset(counts_data,apply(counts_data, 1, mean) >= 1)
 
 
@@ -208,7 +208,7 @@ all(rownames(coldata) == colnames(counts_data))
 all(colnames(counts_data) %in% rownames(coldata))
 all(colnames(counts_data) == rownames(coldata))
 
-#### Remove non-useful genes  ####
+# Remove mitochondrial, haemoglobin, ribosomal and RNA genes
 genes <- read.delim("data/genes_annotation_final.txt",
     header = TRUE, sep = "\t", dec=".")
 genes[(duplicated(genes$ensembl_gene_id_version) == TRUE),]
@@ -227,9 +227,9 @@ counts_data <-  counts_data[,-41]
 colnames(counts_data)
 
 
-# Filter for genes with a median >= 0
+# Filter for genes with low overall expression
 counts_data <- subset(counts_data, apply(counts_data, 1, mean) >= 1)
-# 15946
+
 
 str(coldata)
 coldata <- coldata %>%
