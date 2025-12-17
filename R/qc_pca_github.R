@@ -63,7 +63,7 @@ counts_data <-  counts_data[,-36]
 colnames(counts_data)
 
 
-# Filter for genes with low overall expression
+# Filter out genes with low overall expression
 counts_data <- subset(counts_data,apply(counts_data, 1, mean) >= 1)
 
 
@@ -227,7 +227,7 @@ counts_data <-  counts_data[,-41]
 colnames(counts_data)
 
 
-# Filter for genes with low overall expression
+# Filter out genes with low overall expression
 counts_data <- subset(counts_data, apply(counts_data, 1, mean) >= 1)
 
 
