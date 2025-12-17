@@ -7,6 +7,10 @@ sequencing nasal and blood Ugandan data
 
 #### *In order* 
 
+0.	*upload_rna_seq_counts.R*: uploads the RNAseq gene count data following
+STAR alignment of all fastq files and subsets for protein coding genes for
+downstream analyses
+
 1.	*qc_pca_github.R*: processes the nasal and blood counts data and meta files
 and performs quality control, heatmaps and PCA.
 
