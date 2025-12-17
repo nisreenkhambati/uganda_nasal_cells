@@ -15,7 +15,7 @@ plots
 
 3.	*enrichment_cibersortx_github.R*: performs gsea and ORA enrichment analysis
 for nasal and blood samples and estimates immune cell composition using
-cibersortx. You will need to download the GTF annotation file with PRI Regions
+cibersortx. You will need to download the comprehensive GTF annotation file with PRI Regions
 from https://www.gencodegenes.org/human/release_44.html as this file is too
 large to host in this repository.
 
