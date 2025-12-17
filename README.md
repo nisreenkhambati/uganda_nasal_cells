@@ -15,14 +15,14 @@ TB cases and controls for nasal and blood samples and creates volcano plots,
 boxplots with jitter, heatmaps based on DEG, scatter plots and GSEA enrichment
 plots
 
-3.	*enrichment_cibersortx_github.R*: performs gsea and ORA enrichment analysis
+3.	*roc_models_github.R*: trains six machine learning models using nasal and
+blood DEG and calculates cross-validated AUC for predicting TB
+
+4.	*enrichment_cibersortx_github.R*: performs gsea and ORA enrichment analysis
 for nasal and blood samples and estimates immune cell composition using
 cibersortx. You will need to download the comprehensive GTF annotation file with PRI Regions
 from https://www.gencodegenes.org/human/release_44.html as this file is too
 large to host in this repository.
-
-4.	*roc_models_github.R*: trains six machine learning models using nasal and
-blood DEG and calculates cross-validated AUC for predicting TB
 
 5.	*TB_signatureprofiler_github.R*: evaluates the performance of previously
 published diagnostic TB blood signatures in the nasal and blood datasets. 
