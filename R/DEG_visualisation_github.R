@@ -250,7 +250,7 @@ table_counts_normalized_blood <- counts(dds, normalized=TRUE)
 em <- read.csv("data/em_blood.csv", header=TRUE, row.names = 1)
 
 # differential expression table
-de <- read.csv("data/de_blood.csv", header=TRUE, row.names = 1)
+de_blood <- read.csv("data/de_blood.csv", header=TRUE, row.names = 1)
 res_blood <- de_blood
 de_blood <- de_blood[,-c(1,3,4)]
 colnames(de_blood) <- c("log2fold", "p", "p.adj")
