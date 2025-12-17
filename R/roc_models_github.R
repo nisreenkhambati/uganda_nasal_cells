@@ -100,7 +100,7 @@ feats_nasal<- feats
 set.seed(42)
 fit_control <- trainControl(method = "repeatedcv",
                             number = 10,
-                            repeats = 10, #could if needed switch to 10:10
+                            repeats = 10, 
                             summaryFunction = twoClassSummary,
                             savePredictions = TRUE,
                             classProbs = TRUE,
@@ -230,7 +230,7 @@ all_plots <- wrap_plots(all_plots, ncol = 3, nrow = 2)
 
 
 
-####   IMPORTANCE  ####
+####  VARIABLE IMPORTANCE  ####
 
 plot_importance <- function(fit, model_name, top = 10) {
   imp <- varImp(fit)
@@ -321,7 +321,7 @@ overlapping_genes_ml <- Reduce(intersect, list(
 overlapping_genes_ml
 
 
-#### Train nasal models based on variable importance predictive genes ####
+#### Refit nasal models based on common-consensus variable importance genes (NASAL_4) ####
 
 genes <- c("SPIB", "SHISA2", "TESPA1", "CD1B")
 
@@ -348,13 +348,12 @@ table(feats$status)
 genes
 
 
-#### Run models simplified nasal sig ####
 
 #### RANGER ####
 set.seed(42)
 fit_control <- trainControl(method="repeatedcv",
                             number=10,
-                            repeats=10, #could if needed switch to 10:10
+                            repeats=10, 
                             summaryFunction=twoClassSummary,
                             savePredictions = TRUE,
                             classProbs = TRUE,
@@ -545,7 +544,7 @@ feats_blood <- feats
 set.seed(42)
 fit_control <- trainControl(method="repeatedcv",
                             number=10,
-                            repeats=10, #could if needed switch to 10:10
+                            repeats=10, 
                             summaryFunction=twoClassSummary,
                             savePredictions = TRUE,
                             classProbs = TRUE,
@@ -676,7 +675,7 @@ all_plots <- wrap_plots(all_plots, ncol = 3, nrow = 2)
 
 
 
-#### combined signatures value ####
+#### added value of combined signatures ####
 # nasal_44
 r_fit_nasal44
 fm_model_r <- evalm(r_fit_nasal44, gnames='random forest', plots="r", fsize=11)
