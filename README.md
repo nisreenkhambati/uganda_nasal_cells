@@ -3,7 +3,9 @@
 This repository contains data and code used in the analysis of the RNA
 sequencing nasal and blood Ugandan data 
 
-### **Code**
+### **Code** 
+
+#### *In order* 
 
 1.	*qc_pca_github.R*: processes the nasal and blood counts data and meta files
 and performs quality control, heatmaps and PCA.
