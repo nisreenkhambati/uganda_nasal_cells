@@ -1,9 +1,11 @@
 # ROC and models
 
 # This R script uses nasal and blood DEGs for training six machine learning
-# models and calculates cross-validated AUC for predicting TB
+# models and calculates cross-validated AUC for predicting TB based on all 
+# 44 nasal and 238 blood DEGs
 # Compares nasal_44 and blood_238 missed TB cases for best performing model
-# Derives nasal reduced gene signature based on variable importance
+# Derives nasal parsimonious gene signature based on variable importance (NASAL_4)
+# and refits models
 
 ####   Libraries   ####
 library(doParallel)
@@ -453,7 +455,6 @@ pls_fit <- train(
   metric   = "ROC",
   trControl = fit_control,
   preProcess = c("center","scale"))
-
 
 
 fm_model_pls <- evalm(pls_fit, gnames='PLS', plots="r", fsize=11)
