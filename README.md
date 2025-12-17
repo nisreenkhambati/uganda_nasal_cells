@@ -35,7 +35,10 @@ published diagnostic TB blood signatures in the nasal and blood datasets.
 
 *full_metadata.csv*: metadata for nasal and blood samples 
 
-*rnaseq_counts_protein_coding_final.txt*: raw RNAseq counts of protein coding
+*count_table_final.csv*: RNAseq gene counts of all nasal and bloodfastq 
+files following alignment with STAR tool
+
+*rnaseq_counts_protein_coding_final.txt*: RNAseq counts of protein coding
 genes for nasal and blood samples
 
 *genes_annotation_final.txt*: ensemble gene id to gene symbol conversion
