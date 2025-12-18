@@ -19,7 +19,7 @@ library(tidyverse)
 
 # path to find IPA outputs
 # based on IPA analysis 
-path.dir <- file.path("ipa_outs/ipa_export_all")
+path.dir <- file.path("data/ipa")
 path <- path.dir
 IPA <- list.files(path, pattern = ".txt")
 # list of paths to each file
