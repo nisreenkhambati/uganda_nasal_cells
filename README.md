@@ -91,6 +91,6 @@ derived from the Reactome pathway database (MSigDB)
 
 *blood.txt*: Qiagen IPA results for blood dataset
 
-*nasal.txt*: Qiagen IPA results for nasal dataset
+*nasal_filtered.txt*: Qiagen IPA results for nasal dataset
 
 
