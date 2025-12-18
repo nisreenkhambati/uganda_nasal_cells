@@ -49,7 +49,7 @@ outs <- lapply(paths, importIPAenrichment,  headerGrep =
 
 names(outs) <- tests
 outs$nasal <- NULL
-tests <- c("blood","nasal")
+tests <- c("blood","nasal_filtered")
 
 ####   Canonical Pathways ####  
 
