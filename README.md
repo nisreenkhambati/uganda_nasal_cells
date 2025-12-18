@@ -28,8 +28,13 @@ cibersortx. You will need to download the comprehensive GTF annotation file with
 from https://www.gencodegenes.org/human/release_44.html as this file is too
 large to host in this repository.
 
-5.	*TB_signatureprofiler_github.R*: evaluates the performance of previously
+5.	*IPA_github.R*: imports IPA results and creates barplots for the top 
+canonical pathways and upstream regulators for the nasal and blood
+datasets. 
+
+6.	*TB_signatureprofiler_github.R*: evaluates the performance of previously
 published diagnostic TB blood signatures in the nasal and blood datasets. 
+
 
 ### **Data** 
 
@@ -84,5 +89,8 @@ derived from the Reactome pathway database (MSigDB)
 
 *sig_genes_blood rds*: vector of 238 blood DEG
 
+*blood.txt*: Qiagen IPA results for blood dataset
+
+*nasal.txt*: Qiagen IPA results for nasal dataset
 
 
