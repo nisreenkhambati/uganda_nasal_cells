@@ -267,16 +267,13 @@ figure_importance_10 <- cowplot::plot_grid(nasal_rf, nasal_knn,
 )
 
 figure_importance_10
-nasal_knn   <- plot_importance(knn_fit,     "kNN and SVM")
 
-figure_importance_10_5models <- cowplot::plot_grid(
+nasal_knn   <- plot_importance(knn_fit,     "kNN and SVM")
+figure_importance_10 <- cowplot::plot_grid(
   nasal_rf, nasal_knn,
   nasal_glm, nasal_pls,
-  ncol = 2, labels = LETTERS[1:6]
+  ncol = 2
 )
-
-figure_importance_10_5models
-
 
 #overlaps
 importance_knn <- varImp(knn_fit,)
