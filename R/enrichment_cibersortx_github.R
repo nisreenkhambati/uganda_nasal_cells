@@ -718,24 +718,23 @@ adjusted_p_values_results <- data.frame(
 adjusted_p_values_results
 
 # fig
-nasal_imps <- ggplot(cibersort_metadata_long,
+nasal_imps <- ggplot(cibersort_metadata_long, 
   aes(x = cell_type2, y = Proportion, fill=status)) +  ylim(0, 0.99) +
   geom_boxplot() +
   labs(x = "Immune Cell Type", y = "Imputed immune cell proportions") +
-  ggtitle("Nasal samples") + # No significant differences in cell populations
-  annotate("text", x=1, y=0.96, size=3, label= "p = 0.25") +
-  annotate("text", x=2, y=0.96, size=3, label= "p = 0.47") +
-  annotate("text", x=3, y=0.96, size=3, label= "p = 0.75") +
-  annotate("text", x=4, y=0.96, size=3, label= "p = 0.94") +
-  annotate("text", x=5, y=0.96, size=3, label= "p = 0.66") +
-  annotate("text", x=6, y=0.96, size=3, label= "p = 0.66") +
-  annotate("text", x=7, y=0.96, size=3, label= "p = 0.66") +
-  annotate("text", x=8, y=0.96, size=3, label= "p = 0.66") +
-  annotate("text", x=9, y=0.96, size=3, label= "p = 0.66") +
-  annotate("text", x=10, y=0.96, size=3, label= "p = 0.66") +
+  ggtitle("Nasal samples") + # No sig5ificant differences in cell populations
+  annotate("text", x=1, y=0.96, size=5, label= "p = 0.25") +
+  annotate("text", x=2, y=0.96, size=5, label= "p = 0.47") +
+  annotate("text", x=3, y=0.96, size=5, label= "p = 0.75") + # 
+  annotate("text", x=4, y=0.96, size=5, label= "p = 0.94") +
+  annotate("text", x=5, y=0.96, size=5, label= "p = 0.66") +
+  annotate("text", x=6, y=0.96, size=5, label= "p = 0.66") + 
+  annotate("text", x=7, y=0.96, size=5, label= "p = 0.66") + # 
+  annotate("text", x=8, y=0.96, size=5, label= "p = 0.66") + #
+  annotate("text", x=9, y=0.96, size=5, label= "p = 0.66") + #
+  annotate("text", x=10, y=0.96, size=5, label= "p = 0.66") + 
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 12))
-
 
 
 
@@ -944,22 +943,21 @@ adjusted_p_values_results
 
 
 #fig
-blood_imps <- ggplot(cibersort_metadata_long,
+blood_imps <- ggplot(cibersort_metadata_long, 
   aes(x = cell_type2, y = Proportion, fill=status)) +  ylim(0, 0.99) +
   geom_boxplot() +
   labs(x = "Immune Cell Type", y = "Imputed immune cell proportions") +
   ggtitle("Blood samples") + # No significant differences in cell populations
-  annotate("text", x=1, y=0.96, size=3, label= "p = 0.96") +
-  annotate("text", x=2, y=0.96, size=3, label= "p = 0.25") +
-  annotate("text", x=3, y=0.96, size=3, label= "p = 0.22") + # CD8+ T cells:
-  annotate("text", x=4, y=0.96, size=3, label= "p = 0.97") +
-  annotate("text", x=5, y=0.96, size=3, label= "p = 0.68") +
-  annotate("text", x=6, y=0.96, size=3, label= "p = 0.97") +
-  annotate("text", x=7, y=0.96, size=3, label= "p = 0.04") + #
-  annotate("text", x=8, y=0.96, size=3, label= "p = 0.04") + #
+  annotate("text", x=1, y=0.96, size=5, label= "p = 0.96") +
+  annotate("text", x=2, y=0.96, size=5, label= "p = 0.25") +
+  annotate("text", x=3, y=0.96, size=5, label= "p = 0.22") + # CD8+ T cells: 
+  annotate("text", x=4, y=0.96, size=5, label= "p = 0.97") +
+  annotate("text", x=5, y=0.96, size=5, label= "p = 0.68") +
+  annotate("text", x=6, y=0.96, size=5, label= "p = 0.97") + 
+  annotate("text", x=7, y=0.96, size=5, label= "p = 0.04") + # 
+  annotate("text", x=8, y=0.96, size=5, label= "p = 0.04") + #
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 12))
-
 
 # paneled figs
 
