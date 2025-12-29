@@ -11,28 +11,59 @@ sequencing nasal and blood Ugandan data
 STAR alignment of all fastq files and subsets for protein coding genes for
 downstream analyses
 
+    data files needed: count_table_final.csv
+
 1.	*qc_pca_github.R*: processes the nasal and blood counts data and meta files
 and performs quality control, heatmaps and PCA.
 
-2.	*DEG_visualisation_github.R*: performs differential gene expression between
+    data files needed: full_metadata.csv, rnaseq_counts_protein_coding_final.txt,
+  	genes_annotation_final.txt, nasalcounts.csv, nasalcoldata.csv,
+  	bloodcoldata.csv, bloodcoldata.csv
+
+3.	*DEG_visualisation_github.R*: performs differential gene expression between
 TB cases and controls for nasal and blood samples and creates volcano plots,
 boxplots with jitter, heatmaps based on DEG, scatter plots and GSEA enrichment
 plots
 
-3.	*roc_models_github.R*: trains six machine learning models using nasal and
+    data files needed: nasalcounts.csv, nasalcoldata.csv,
+  	bloodcoldata.csv, bloodcoldata.csv, em_nasal.csv,
+  	de_nasal.csv, sample_info_nasal.csv, em_blood.csv,
+  	de_blood.csv, sample_info_blood.csv
+
+5.	*roc_models_github.R*: trains six machine learning models using nasal and
 blood DEG and calculates cross-validated AUC for predicting TB
 
-4.	*enrichment_cibersortx_github.R*: performs gsea and ORA enrichment analysis
+    data files needed: nasalcounts.csv, nasalcoldata.csv,
+  	bloodcoldata.csv, bloodcoldata.csv, sig_genes_blood.rds,
+  	sig_genes_nasal.rds
+
+7.	*enrichment_cibersortx_github.R*: performs gsea and ORA enrichment analysis
 for nasal and blood samples and estimates immune cell composition using
 cibersortx. You will need to download the comprehensive GTF annotation file with PRI Regions
 from https://www.gencodegenes.org/human/release_44.html as this file is too
 large to host in this repository.
 
-5.	*IPA_github.R*: imports IPA results and creates barplots for the top 
-canonical pathways and upstream regulators for the nasal and blood
-datasets. 
+    data files needed: nasalcounts.csv, nasalcoldata.csv,
+  	bloodcoldata.csv, bloodcoldata.csv, em_nasal.csv,
+  	de_nasal.csv, sample_info_nasal.csv, em_blood.csv,
+  	de_blood.csv, sample_info_blood.csv, genes_annotation_final.txt,
+  	c2.cp.kegg_legacy.v2023.2.Hs.symbols.gmt.txt, c2.cp.reactome.v2023.2.Hs.symbols.gmt.txt
+  	h.all.v2023.2.Hs.symbols.gmt.txt, CIBERSORTx_Job2_Adjusted.txt,
+  	CIBERSORTx_Job3_Adjusted.txt
 
-6.	*TB_signatureprofiler_github.R*: evaluates the performance of previously
+9.	*IPA_github.R*: imports IPA results and creates barplots for the top 
+canonical pathways and upstream regulators for the nasal and blood
+datasets.
+
+    data files needed: nasalcounts.csv, nasalcoldata.csv,
+  	bloodcoldata.csv, bloodcoldata.csv, em_nasal.csv,
+  	de_nasal.csv, sample_info_nasal.csv, em_blood.csv,
+  	de_blood.csv, sample_info_blood.csv, genes_annotation_final.txt,
+  	c2.cp.kegg_legacy.v2023.2.Hs.symbols.gmt.txt, c2.cp.reactome.v2023.2.Hs.symbols.gmt.txt
+  	h.all.v2023.2.Hs.symbols.gmt.txt, CIBERSORTx_Job2_Adjusted.txt,
+  	CIBERSORTx_Job3_Adjusted.txt
+
+11.	*TB_signatureprofiler_github.R*: evaluates the performance of previously
 published diagnostic TB blood signatures in the nasal and blood datasets. 
 
 
