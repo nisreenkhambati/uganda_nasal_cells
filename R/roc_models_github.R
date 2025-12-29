@@ -473,6 +473,12 @@ fm_model_svmr$roc
 fm_model_knn$roc
 fm_model_pls$roc
 
+fm_model_r$optres
+fm_model_e$optres
+fm_model_svm$optres
+fm_model_svmr$optres
+fm_model_knn$optres
+fm_model_pls$optres
 
 #### Figures  ####
 
